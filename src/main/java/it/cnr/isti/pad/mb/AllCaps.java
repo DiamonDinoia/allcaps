@@ -52,7 +52,7 @@ public class AllCaps {
     }
 
 
-    public static class Myreducer extends Reducer<LongWritable, Iterable<Text>, NullWritable, Text> {
+    public static class Myreducer extends Reducer<LongWritable, Text, NullWritable, Text> {
 
         @Override
         protected void reduce(LongWritable key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
