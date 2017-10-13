@@ -23,7 +23,7 @@ public class AllCaps {
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
 
         Configuration conf = new Configuration();
-        Job job = new Job(conf, "wordcount");
+        Job job = new Job(conf, "AllCaps");
 
         job.setMapperClass(Mymapper.class);
         job.setReducerClass(Myreducer.class);
