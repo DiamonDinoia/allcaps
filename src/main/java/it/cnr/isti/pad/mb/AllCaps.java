@@ -3,6 +3,8 @@ package it.cnr.isti.pad.mb;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -26,6 +28,8 @@ public class AllCaps {
         job.setMapperClass(Mymapper.class);
         job.setReducerClass(Myreducer.class);
 
+        job.setNumReduceTasks(2);
+
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
 
@@ -37,11 +41,24 @@ public class AllCaps {
 
     }
 
-    public static class Mymapper extends Mapper {
+    public static class Mymapper extends Mapper<LongWritable, Text, LongWritable, Text> {
 
+
+        @Override
+        protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+            value.set(value.toString().toUpperCase());
+            context.write(key, value);
+        }
     }
 
-    public static class Myreducer extends Reducer {
 
+    public static class Myreducer extends Reducer<LongWritable, Iterable<Text>, NullWritable, Text> {
+
+        @Override
+        protected void reduce(LongWritable key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+            for (Text value : values) {
+                context.write(NullWritable.get(), value);
+            }
+        }
     }
 }
